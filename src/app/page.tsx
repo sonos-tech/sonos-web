@@ -1,18 +1,20 @@
 "use client";
 
-import { DynamicWidget, useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
+import { useAuth } from "@/hooks/useAuth";
+import { SongList } from "@/components/SongList";
 
 export default function Home() {
-  const { user } = useDynamicContext();
+  const { isAuthenticated } = useAuth();
 
-  if (user) {
+  if (isAuthenticated) {
     return (
-      <div className="flex flex-1 items-center justify-center">
-        <div className="text-center space-y-4">
-          <h1 className="text-3xl font-bold">Welcome to SONOS</h1>
-          <p className="text-zinc-500">Loading your experience...</p>
+      <div className="flex flex-col flex-1 w-full max-w-3xl mx-auto px-4 py-8 gap-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold">SONOS</h1>
           <DynamicWidget />
         </div>
+        <SongList />
       </div>
     );
   }

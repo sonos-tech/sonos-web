@@ -14,7 +14,12 @@ function createApiClient(baseUrl: string) {
       headers["Content-Type"] = "application/json";
     }
 
-    const res = await fetch(`${baseUrl}${path}`, { ...opts, headers });
+    let res: Response;
+    try {
+      res = await fetch(`${baseUrl}${path}`, { ...opts, headers });
+    } catch {
+      throw new Error("Network error — is the backend running?");
+    }
     if (res.status === 401) {
       throw new Error("Unauthorized");
     }
@@ -35,7 +40,12 @@ function createApiClient(baseUrl: string) {
     };
     if (token) headers["Authorization"] = `Bearer ${token}`;
 
-    const res = await fetch(`${baseUrl}${path}`, { ...opts, headers });
+    let res: Response;
+    try {
+      res = await fetch(`${baseUrl}${path}`, { ...opts, headers });
+    } catch {
+      throw new Error("Network error — is the backend running?");
+    }
     if (res.status === 401) {
       throw new Error("Unauthorized");
     }

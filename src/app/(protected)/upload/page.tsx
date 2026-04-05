@@ -38,8 +38,10 @@ export default function UploadPage() {
       router.push("/");
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Upload failed";
-      if (msg.includes("INSUFFICIENT_TOKEN_BALANCE")) {
+      if (msg.includes("INSUFFICIENT") || msg.includes("balance") || msg.includes("allowance")) {
         toast("Insufficient SONOS tokens to upload (costs 10 SONOS)");
+      } else if (msg.includes("Network error")) {
+        toast("Could not reach server — check your connection");
       } else {
         toast(msg);
       }

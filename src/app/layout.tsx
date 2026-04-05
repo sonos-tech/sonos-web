@@ -18,6 +18,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "SONOS - Decentralized Music",
   description: "Listen, earn, and own music on-chain",
+  icons: {
+    icon: "/SonosLogo.png",
+    apple: "/SonosLogo.png",
+  },
 };
 
 export default function RootLayout({

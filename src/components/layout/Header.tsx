@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 import { useEffect, useState } from "react";
@@ -42,13 +43,13 @@ export function Header() {
       <div className="flex items-center justify-between px-5 py-3">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-violet-500/20 group-hover:shadow-violet-500/40 transition-shadow">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-white">
-                <path d="M9 18V5l12-2v13" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <circle cx="6" cy="18" r="3" stroke="currentColor" strokeWidth="2.5"/>
-                <circle cx="18" cy="16" r="3" stroke="currentColor" strokeWidth="2.5"/>
-              </svg>
-            </div>
+            <Image
+              src="/SonosLogo.png"
+              alt="SONOS"
+              width={36}
+              height={36}
+              className="rounded-full"
+            />
             <span className="text-lg font-bold tracking-tight">SONOS</span>
           </Link>
           {isAuthenticated && (

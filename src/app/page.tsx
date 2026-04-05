@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 import { useAuth } from "@/hooks/useAuth";
 import { useWebSocket } from "@/hooks/useWebSocket";
@@ -47,6 +48,13 @@ export default function Home() {
               <div className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
               Built on Hedera &amp; 0G Storage
             </div>
+            <Image
+              src="/SonosLogo.png"
+              alt="SONOS"
+              width={120}
+              height={120}
+              className="mx-auto rounded-full shadow-2xl shadow-violet-500/30"
+            />
             <h1 className="text-6xl sm:text-7xl font-bold tracking-tighter gradient-text">
               SONOS
             </h1>

@@ -12,7 +12,7 @@ export default function UploadPage() {
   const [title, setTitle] = useState("");
   const [genre, setGenre] = useState("");
   const [duration, setDuration] = useState<number | null>(null);
-  const [buyoutPrice, setBuyoutPrice] = useState("");
+  const [buyoutPrice, setBuyoutPrice] = useState("5000");
   const [uploading, setUploading] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
 

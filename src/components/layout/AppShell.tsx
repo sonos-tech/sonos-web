@@ -9,7 +9,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <PlayerProvider>
       <div className="flex flex-col min-h-full">
         <Header />
-        <main className="flex-1 w-full max-w-3xl mx-auto px-4 py-8 pb-24">
+        <main className="flex-1 w-full max-w-4xl mx-auto px-4 sm:px-6 py-8 pb-28">
           {children}
         </main>
         <Player />

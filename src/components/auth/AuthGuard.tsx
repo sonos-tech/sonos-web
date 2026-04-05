@@ -20,7 +20,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   if (!mounted || !isAuthenticated) {
     return (
       <div className="flex flex-1 items-center justify-center">
-        <p className="text-zinc-500">Loading...</p>
+        <span className="inline-block w-5 h-5 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }

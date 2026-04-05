@@ -117,19 +117,19 @@ export function usePlayer() {
     if (!audio) return;
 
     const handleTimeUpdate = async () => {
-      if (!currentSong || state !== "preview") return;
+      if (!currentSong || (state !== "preview" && state !== "confirming")) return;
 
       const t = audio.currentTime;
 
       // Confirm at 20s
-      if (t >= 20 && !confirmed && stakeId) {
+      if (t >= 20 && !confirmed && stakeId && state === "preview") {
         setConfirmed(true);
         setState("confirming");
         api.confirmPlay(stakeId).catch(console.error);
       }
 
-      // Switch to full at 30s
-      if (t >= 30 && confirmed) {
+      // Switch to full at 30s (state is "confirming" by now)
+      if (t >= 30 && confirmed && state === "confirming") {
         setState("full");
         try {
           const resp = await api.getFullSong(currentSong.song_id);

@@ -49,7 +49,7 @@ export function DynamicProvider({ children }: { children: React.ReactNode }) {
                 symbol: "ETH",
               },
               networkId: 11155111,
-              rpcUrls: ["https://rpc.sepolia.org"],
+              rpcUrls: ["https://ethereum-sepolia-rpc.publicnode.com"],
               vanityName: "Sepolia Testnet",
             },
           ],

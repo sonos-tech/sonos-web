@@ -3,6 +3,19 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "@/lib/api";
 import type { Song, PlayState } from "@/lib/types";
+import { useToast } from "@/providers/ToastProvider";
+
+function friendlyError(msg: string): string {
+  if (msg.includes("INSUFFICIENT_TOKEN_BALANCE"))
+    return "Insufficient SONOS tokens to play. Buy SONOS first!";
+  if (msg.includes("Unauthorized"))
+    return "Session expired — please reconnect your wallet.";
+  if (msg.includes("not onboarded"))
+    return "Wallet not yet set up. Please wait a moment and try again.";
+  if (msg.includes("allowance"))
+    return "Token allowance too low. Please try again shortly.";
+  return msg;
+}
 
 export function usePlayer() {
   const [state, setState] = useState<PlayState>("idle");
@@ -11,6 +24,7 @@ export function usePlayer() {
   const [confirmed, setConfirmed] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const blobUrlRef = useRef<string | null>(null);
+  const { toast } = useToast();
 
   // Cleanup blob URL
   const revokeBlobUrl = useCallback(() => {
@@ -70,11 +84,12 @@ export function usePlayer() {
           audioRef.current.play();
         }
       } catch (e) {
-        console.error("Play failed:", e);
+        const msg = e instanceof Error ? e.message : "Playback failed";
+        toast(friendlyError(msg));
         stop();
       }
     },
-    [stop, revokeBlobUrl],
+    [stop, revokeBlobUrl, toast],
   );
 
   const skip = useCallback(async () => {
@@ -124,14 +139,15 @@ export function usePlayer() {
           audio.currentTime = currentTime;
           audio.play();
         } catch (e) {
-          console.error("Full song load failed:", e);
+          const msg = e instanceof Error ? e.message : "Full song load failed";
+          toast(friendlyError(msg));
         }
       }
     };
 
     audio.addEventListener("timeupdate", handleTimeUpdate);
     return () => audio.removeEventListener("timeupdate", handleTimeUpdate);
-  }, [currentSong, state, confirmed, stakeId, revokeBlobUrl]);
+  }, [currentSong, state, confirmed, stakeId, revokeBlobUrl, toast]);
 
   return {
     state,

@@ -31,6 +31,26 @@ export function DynamicProvider({ children }: { children: React.ReactNode }) {
       settings={{
         environmentId: config.dynamicEnvId,
         walletConnectors: [EthereumWalletConnectors],
+        logLevel: "WARN",
+        overrides: {
+          evmNetworks: () => [
+            {
+              blockExplorerUrls: ["https://sepolia.etherscan.io/"],
+              chainId: 11155111,
+              chainName: "Sepolia",
+              iconUrls: ["https://app.dynamic.xyz/assets/networks/eth.svg"],
+              name: "Sepolia",
+              nativeCurrency: {
+                decimals: 18,
+                name: "Sepolia Ether",
+                symbol: "ETH",
+              },
+              networkId: 11155111,
+              rpcUrls: ["https://rpc.sepolia.org"],
+              vanityName: "Sepolia Testnet",
+            },
+          ],
+        },
       }}
     >
       <AuthSync>{children}</AuthSync>

@@ -4,11 +4,12 @@ import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 import { useAuth } from "@/hooks/useAuth";
 import { useWebSocket } from "@/hooks/useWebSocket";
 import { SongList } from "@/components/SongList";
-import { Player, usePlayer } from "@/components/Player";
+import { Player } from "@/components/Player";
 import { Header } from "@/components/layout/Header";
+import { PlayerProvider, usePlayerContext } from "@/providers/PlayerProvider";
 
 function AuthenticatedHome() {
-  const { play } = usePlayer();
+  const { play } = usePlayerContext();
   useWebSocket();
 
   return (
@@ -26,7 +27,11 @@ export default function Home() {
   const { isAuthenticated } = useAuth();
 
   if (isAuthenticated) {
-    return <AuthenticatedHome />;
+    return (
+      <PlayerProvider>
+        <AuthenticatedHome />
+      </PlayerProvider>
+    );
   }
 
   return (

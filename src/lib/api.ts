@@ -1,4 +1,4 @@
-import { getToken, clearToken } from "./auth";
+import { getToken } from "./auth";
 import type { Song, AuthUser } from "./types";
 
 function createApiClient(baseUrl: string) {
@@ -16,7 +16,6 @@ function createApiClient(baseUrl: string) {
 
     const res = await fetch(`${baseUrl}${path}`, { ...opts, headers });
     if (res.status === 401) {
-      clearToken();
       throw new Error("Unauthorized");
     }
     if (!res.ok) {
@@ -38,7 +37,6 @@ function createApiClient(baseUrl: string) {
 
     const res = await fetch(`${baseUrl}${path}`, { ...opts, headers });
     if (res.status === 401) {
-      clearToken();
       throw new Error("Unauthorized");
     }
     if (!res.ok) {

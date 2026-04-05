@@ -1,28 +1,23 @@
 "use client";
 
 import { useDynamicContext, getAuthToken } from "@dynamic-labs/sdk-react-core";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { setToken, clearToken, getToken } from "@/lib/auth";
 
 export function useAuth() {
   const { user, primaryWallet } = useDynamicContext();
-  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     if (user) {
       const jwt = getAuthToken();
-      if (jwt) {
-        setToken(jwt);
-      }
-      setIsReady(true);
+      if (jwt) setToken(jwt);
     } else {
       clearToken();
-      setIsReady(false);
     }
   }, [user]);
 
   return {
-    isAuthenticated: !!user && isReady,
+    isAuthenticated: !!user,
     user,
     wallet: primaryWallet,
     walletAddress: primaryWallet?.address ?? null,

@@ -1,12 +1,11 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import { usePlayer } from "@/hooks/usePlayer";
-import type { Song } from "@/lib/types";
+import { usePlayerContext } from "@/providers/PlayerProvider";
 
 export function Player() {
-  const { state, currentSong, play, skip, pause, resume, audioRef } =
-    usePlayer();
+  const { state, currentSong, skip, pause, resume, audioRef } =
+    usePlayerContext();
   const localAudioRef = useRef<HTMLAudioElement>(null);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -90,6 +89,3 @@ export function Player() {
     </div>
   );
 }
-
-// Re-export play function via context for other components
-export { usePlayer };

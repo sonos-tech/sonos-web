@@ -31,7 +31,7 @@ class WSClient {
     if (!this.shouldConnect) return;
 
     const token = getToken();
-    const url = `${config.wsUrl}/ws${token ? `?token=${token}` : ""}`;
+    const url = `${config.wsUrl}${token ? `?token=${token}` : ""}`;
 
     try {
       this.ws = new WebSocket(url);

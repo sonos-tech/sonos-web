@@ -9,6 +9,7 @@ import {
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import { config } from "@/lib/config";
 import { setToken, clearToken } from "@/lib/auth";
+import { useTheme } from "@/providers/ThemeProvider";
 
 function AuthSync({ children }: { children: React.ReactNode }) {
   const { user } = useDynamicContext();
@@ -26,8 +27,10 @@ function AuthSync({ children }: { children: React.ReactNode }) {
 }
 
 export function DynamicProvider({ children }: { children: React.ReactNode }) {
+  const { theme } = useTheme();
   return (
     <DynamicContextProvider
+      theme={theme}
       settings={{
         environmentId: config.dynamicEnvId,
         walletConnectors: [EthereumWalletConnectors],

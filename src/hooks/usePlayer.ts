@@ -46,6 +46,15 @@ export function usePlayer() {
     setConfirmed(false);
   }, [revokeBlobUrl]);
 
+  const playAudio = useCallback((url: string) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.src = url;
+    audio.play().catch(() => {
+      // Autoplay blocked — user can click play button
+    });
+  }, []);
+
   const play = useCallback(
     async (song: Song) => {
       stop();
@@ -65,10 +74,7 @@ export function usePlayer() {
           revokeBlobUrl();
           const url = URL.createObjectURL(blob);
           blobUrlRef.current = url;
-          if (audioRef.current) {
-            audioRef.current.src = url;
-            audioRef.current.play();
-          }
+          playAudio(url);
           return;
         }
 
@@ -79,17 +85,14 @@ export function usePlayer() {
         revokeBlobUrl();
         const previewUrl = URL.createObjectURL(previewBlob);
         blobUrlRef.current = previewUrl;
-        if (audioRef.current) {
-          audioRef.current.src = previewUrl;
-          audioRef.current.play();
-        }
+        playAudio(previewUrl);
       } catch (e) {
         const msg = e instanceof Error ? e.message : "Playback failed";
         toast(friendlyError(msg));
         stop();
       }
     },
-    [stop, revokeBlobUrl, toast],
+    [stop, revokeBlobUrl, toast, playAudio],
   );
 
   const skip = useCallback(async () => {

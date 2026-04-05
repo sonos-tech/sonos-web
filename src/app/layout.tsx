@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { DynamicProvider } from "@/providers/DynamicProvider";
 import { ToastProvider } from "@/providers/ToastProvider";
+import { ThemeProvider } from "@/providers/ThemeProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -28,12 +29,14 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
       <body className="min-h-full flex flex-col">
-        <DynamicProvider>
-          <ToastProvider>{children}</ToastProvider>
-        </DynamicProvider>
+        <ThemeProvider>
+          <DynamicProvider>
+            <ToastProvider>{children}</ToastProvider>
+          </DynamicProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

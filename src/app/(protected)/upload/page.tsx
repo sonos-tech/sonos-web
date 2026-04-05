@@ -3,24 +3,24 @@
 import { useState, useRef } from "react";
 import { api } from "@/lib/api";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/providers/ToastProvider";
 
 export default function UploadPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const fileRef = useRef<HTMLInputElement>(null);
   const [title, setTitle] = useState("");
   const [genre, setGenre] = useState("");
   const [duration, setDuration] = useState("");
   const [buyoutPrice, setBuyoutPrice] = useState("");
   const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError(null);
 
     const file = fileRef.current?.files?.[0];
     if (!file) {
-      setError("Please select an audio file");
+      toast("Please select an audio file");
       return;
     }
 
@@ -34,9 +34,15 @@ export default function UploadPage() {
     setUploading(true);
     try {
       await api.uploadSong(form);
+      toast("Song uploaded successfully!", "success");
       router.push("/");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Upload failed");
+      const msg = err instanceof Error ? err.message : "Upload failed";
+      if (msg.includes("INSUFFICIENT_TOKEN_BALANCE")) {
+        toast("Insufficient SONOS tokens to upload (costs 10 SONOS)");
+      } else {
+        toast(msg);
+      }
     } finally {
       setUploading(false);
     }
@@ -100,8 +106,6 @@ export default function UploadPage() {
             className="w-full rounded border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
           />
         </div>
-
-        {error && <p className="text-red-500 text-sm">{error}</p>}
 
         <button
           type="submit"

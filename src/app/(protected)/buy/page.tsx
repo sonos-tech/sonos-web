@@ -5,21 +5,19 @@ import { parseEther } from "viem";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { api } from "@/lib/api";
 import { config } from "@/lib/config";
+import { useToast } from "@/providers/ToastProvider";
 
 export default function BuyPage() {
   const { primaryWallet } = useDynamicContext();
+  const { toast } = useToast();
   const [ethAmount, setEthAmount] = useState("");
   const [buying, setBuying] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
   async function handleBuy(e: React.FormEvent) {
     e.preventDefault();
-    setError(null);
-    setSuccess(null);
 
     if (!primaryWallet) {
-      setError("No wallet connected");
+      toast("No wallet connected");
       return;
     }
 
@@ -34,10 +32,17 @@ export default function BuyPage() {
 
       // Submit to backend for verification + SONOS minting
       const resp = await api.buySonos(txHash, ethAmount);
-      setSuccess(`Received ${resp.sonos_minted / 100} SONOS!`);
+      toast(`Received ${resp.sonos_minted / 100} SONOS!`, "success");
       setEthAmount("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Purchase failed");
+      const msg = err instanceof Error ? err.message : "Purchase failed";
+      if (msg.includes("insufficient funds")) {
+        toast("Insufficient ETH in your wallet");
+      } else if (msg.includes("User rejected")) {
+        toast("Transaction cancelled", "info");
+      } else {
+        toast(msg);
+      }
     } finally {
       setBuying(false);
     }
@@ -63,9 +68,6 @@ export default function BuyPage() {
             className="w-full rounded border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
           />
         </div>
-
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-        {success && <p className="text-green-500 text-sm">{success}</p>}
 
         <button
           type="submit"

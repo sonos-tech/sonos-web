@@ -3,13 +3,14 @@
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/providers/ToastProvider";
 
 export default function DashboardPage() {
   const { walletAddress } = useAuth();
+  const { toast } = useToast();
   const [balance, setBalance] = useState<{ balance: number; formatted: string } | null>(null);
   const [cashoutAmount, setCashoutAmount] = useState("");
   const [cashing, setCashing] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
     api.getBalance().then(setBalance).catch(() => {});
@@ -17,16 +18,19 @@ export default function DashboardPage() {
 
   async function handleCashout(e: React.FormEvent) {
     e.preventDefault();
-    setMessage(null);
     setCashing(true);
     try {
       const resp = await api.cashout(parseInt(cashoutAmount, 10));
-      setMessage(`Sent ${resp.eth_sent} ETH (tx: ${resp.tx_hash.slice(0, 10)}...)`);
+      toast(`Sent ${resp.eth_sent} ETH (tx: ${resp.tx_hash.slice(0, 10)}...)`, "success");
       setCashoutAmount("");
-      // Refresh balance
       api.getBalance().then(setBalance).catch(() => {});
     } catch (err) {
-      setMessage(err instanceof Error ? err.message : "Cashout failed");
+      const msg = err instanceof Error ? err.message : "Cashout failed";
+      if (msg.includes("INSUFFICIENT_TOKEN_BALANCE")) {
+        toast("Insufficient SONOS balance to cash out");
+      } else {
+        toast(msg);
+      }
     } finally {
       setCashing(false);
     }
@@ -66,7 +70,6 @@ export default function DashboardPage() {
             {cashing ? "..." : "Cashout"}
           </button>
         </form>
-        {message && <p className="text-sm mt-2 text-zinc-500">{message}</p>}
       </div>
     </div>
   );

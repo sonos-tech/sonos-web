@@ -11,9 +11,21 @@ export function Header() {
   const [balance, setBalance] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (!isAuthenticated) return;
+    // Small delay to let wallet onboarding complete on first login
+    const timer = setTimeout(() => {
       api.getBalance().then((b) => setBalance(b.formatted)).catch(() => {});
-    }
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [isAuthenticated]);
+
+  // Refresh balance periodically
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const interval = setInterval(() => {
+      api.getBalance().then((b) => setBalance(b.formatted)).catch(() => {});
+    }, 15000);
+    return () => clearInterval(interval);
   }, [isAuthenticated]);
 
   return (
